@@ -29,6 +29,7 @@ class MainActivity : AppCompatActivity() {
         val tabs: TabLayout = findViewById(R.id.tabs)
         tabs.setupWithViewPager(viewPager)
 
+        AndroidNetworking.initialize(getApplicationContext());
 
         locationManager = getSystemService(LOCATION_SERVICE) as LocationManager?
 
@@ -51,6 +52,35 @@ class MainActivity : AppCompatActivity() {
         override fun onLocationChanged(location: Location) {
             thetext.text = ("" + location.longitude + ":" + location.latitude)
 
+            val jsonString = """
+                {
+                    "userId": "c281af7f-830d-4c8b-8894-ba36d08d1aa7",
+                    "time":"2020-05-06T19:03:34",
+                    "position": {
+                   	 "lat": 10.0,
+                   	 "lon": 15.0
+                    },
+                    "prevSquareId": "c281af7f-830d-4c8b-8894-ba36d08d1aa7"
+                }
+            """.trimIndent()
+            val jsonObj = JSONObject(jsonString)
+            AndroidNetworking.post("http://192.168.0.106:8080/getSquare")
+                .addJSONObjectBody(jsonObj)
+                .setTag(this)
+                .setPriority(Priority.MEDIUM)
+                .build()
+                .getAsJSONObject(object : JSONObjectRequestListener {
+                    override fun onResponse(response: JSONObject) {
+                        System.out.println(response)
+                        val squareId : String =
+                            response.getString("id")
+                        thetext2.text = (squareId)
+                    }
+
+                    override fun onError(error: ANError) {
+                        System.out.println(error)
+                    }
+                })
         }
 
         override fun onStatusChanged(provider: String, status: Int, extras: Bundle) {}
