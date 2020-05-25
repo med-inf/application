@@ -7,8 +7,10 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -21,6 +23,7 @@ import com.androidnetworking.error.ANError
 import com.androidnetworking.interfaces.JSONObjectRequestListener
 import org.json.JSONObject
 import java.lang.Math.abs
+import java.time.Instant
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -29,7 +32,7 @@ class MainActivity : AppCompatActivity() {
     private var locationManager: LocationManager? = null
     private var locations = ArrayList<String>()
     private var adapter: MyRecyclerViewAdapter? = null
-    private lateinit var wordViewModel: WordViewModel
+//    private lateinit var wordViewModel: WordViewModel
 
     private var locationTimeBetweenMs: Long = 5000
     private var db: AppDatabase? = null
@@ -106,17 +109,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private val locationListener: LocationListener = object : LocationListener {
-        var prevSquareId: String = "c281af7f-830d-4c8b-8894-ba36d08d1aa7"
         var center: Location = Location("")
         var edgeLen: Double = 0.0
 
         override fun onLocationChanged(location: Location) {
             val isLocationChanged = checkIfLocationChanged(location);
-            if (isLocationChanged) {
-                val currentTime = Calendar.getInstance().time
-
-                sendRequestToServer(location, currentTime)
-            }
+//            if (isLocationChanged) {
+                sendRequestToServer(location)
+//            }
         }
 
         fun checkIfLocationChanged(location: Location): Boolean {
@@ -127,18 +127,21 @@ class MainActivity : AppCompatActivity() {
             return true
         }
 
-        fun sendRequestToServer(location: Location, time: Date) {
+        fun sendRequestToServer(location: Location) {
             val deviceId = uniqueID
-            println("id: $deviceId time: $time")
+            println("id: $deviceId time: ${location.time}")
             val jsonString = """
                 {
                     "userId": "$deviceId",
-                    "time":"$time",
+                    "time":${location.time},
                     "position": {
                    	 "lat": ${location.latitude},
                    	 "lon": ${location.longitude}
                     },
-                    "prevSquareId": "$prevSquareId"
+                    "prevSquareCenter": {
+                   	 "lat": ${center.latitude},
+                   	 "lon": ${center.longitude}
+                    }
                 }
             """.trimIndent()
             val jsonObj = JSONObject(jsonString)
@@ -150,14 +153,11 @@ class MainActivity : AppCompatActivity() {
                 .getAsJSONObject(object : JSONObjectRequestListener {
                     override fun onResponse(response: JSONObject) {
                         println(response)
-                        prevSquareId =
-                            response.getString("id")
                         center.latitude = response.getDouble("center.lat")
                         center.longitude = response.getDouble("center.lon")
                         edgeLen = response.getDouble("edgeLen")
-                        val time = response.getDouble("time")
-                        saveToDatabase(prevSquareId, time);
-                        locations.add(prevSquareId)
+//                        saveToDatabase(prevSquareId, time);
+                        locations.add(location.time.toString())
                         adapter?.notifyDataSetChanged()
                     }
 
