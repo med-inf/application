@@ -15,10 +15,7 @@ import com.androidnetworking.interfaces.JSONObjectRequestListener
 import org.json.JSONObject
 import java.util.*
 
-//const val MSG_LEAVE_SQUARE = 1
-
 class MyService : Service() {
-//    private lateinit var mMessenger: Messenger
 
     private var mLocationManager: LocationManager? = null
 
@@ -191,7 +188,7 @@ class MyService : Service() {
         return null
     }
 
-    fun leaveSquare(){
+    fun leaveSquare() {
         Log.e(TAG, "leave square")
         val jsonString = """
                 {
@@ -212,11 +209,10 @@ class MyService : Service() {
             .setPriority(Priority.MEDIUM)
             .build().getAsJSONObject(object : JSONObjectRequestListener {
                 override fun onResponse(response: JSONObject) {
-//                    this@MyService.stopSelf();
                 }
+
                 override fun onError(error: ANError) {
                     println(error)
-//                    this@MyService.stopSelf();
                 }
             });
 
@@ -276,27 +272,4 @@ class MyService : Service() {
         }
         return uniqueID
     }
-
-//    inner class IncomingHandler(
-//        context: Context,
-//        private val applicationContext: Context = context.applicationContext
-//    ) : Handler() {
-//        override fun handleMessage(msg: Message) {
-//            Log.e(TAG, msg.what as String)
-//            when (msg.what) {
-//                MSG_LEAVE_SQUARE -> leaveSquare()
-//                else -> super.handleMessage(msg)
-//            }
-//        }
-//    }
-//
-//    /**
-//     * When binding to the service, we return an interface to our messenger
-//     * for sending messages to the service.
-//     */
-//    override fun onBind(intent: Intent): IBinder? {
-//        Log.e(TAG,"Binding")
-//        mMessenger = Messenger(IncomingHandler(this))
-//        return mMessenger.binder
-//    }
 }
