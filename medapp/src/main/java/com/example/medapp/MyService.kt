@@ -6,9 +6,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.location.Location
 import android.location.LocationManager
-import android.os.Binder
-import android.os.Bundle
-import android.os.IBinder
+import android.os.*
 import android.util.Log
 import com.androidnetworking.AndroidNetworking
 import com.androidnetworking.common.Priority
@@ -17,9 +15,10 @@ import com.androidnetworking.interfaces.JSONObjectRequestListener
 import org.json.JSONObject
 import java.util.*
 
+//const val MSG_LEAVE_SQUARE = 1
+
 class MyService : Service() {
-    // Binder given to clients
-    private val binder = LocalBinder()
+//    private lateinit var mMessenger: Messenger
 
     private var mLocationManager: LocationManager? = null
 
@@ -188,7 +187,12 @@ class MyService : Service() {
         }
     }
 
+    override fun onBind(intent: Intent?): IBinder? {
+        return null
+    }
+
     fun leaveSquare(){
+        Log.e(TAG, "leave square")
         val jsonString = """
                 {
                     "userId": "$uniqueID",
@@ -208,11 +212,11 @@ class MyService : Service() {
             .setPriority(Priority.MEDIUM)
             .build().getAsJSONObject(object : JSONObjectRequestListener {
                 override fun onResponse(response: JSONObject) {
-                    this@MyService.stopSelf();
+//                    this@MyService.stopSelf();
                 }
                 override fun onError(error: ANError) {
                     println(error)
-                    this@MyService.stopSelf();
+//                    this@MyService.stopSelf();
                 }
             });
 
@@ -220,6 +224,8 @@ class MyService : Service() {
 
     override fun onDestroy() {
         Log.e(TAG, "onDestroy")
+
+        this.leaveSquare()
 
         if (mLocationManager != null) {
             for (i in mLocationListeners.indices) {
@@ -271,16 +277,26 @@ class MyService : Service() {
         return uniqueID
     }
 
-    /**
-     * Class used for the client Binder.  Because we know this service always
-     * runs in the same process as its clients, we don't need to deal with IPC.
-     */
-    inner class LocalBinder : Binder() {
-        // Return this instance of LocalService so clients can call public methods
-        fun getService(): MyService = this@MyService
-    }
-
-    override fun onBind(intent: Intent): IBinder {
-        return binder
-    }
+//    inner class IncomingHandler(
+//        context: Context,
+//        private val applicationContext: Context = context.applicationContext
+//    ) : Handler() {
+//        override fun handleMessage(msg: Message) {
+//            Log.e(TAG, msg.what as String)
+//            when (msg.what) {
+//                MSG_LEAVE_SQUARE -> leaveSquare()
+//                else -> super.handleMessage(msg)
+//            }
+//        }
+//    }
+//
+//    /**
+//     * When binding to the service, we return an interface to our messenger
+//     * for sending messages to the service.
+//     */
+//    override fun onBind(intent: Intent): IBinder? {
+//        Log.e(TAG,"Binding")
+//        mMessenger = Messenger(IncomingHandler(this))
+//        return mMessenger.binder
+//    }
 }
