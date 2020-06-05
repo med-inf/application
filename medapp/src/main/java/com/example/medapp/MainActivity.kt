@@ -16,6 +16,7 @@ import com.androidnetworking.AndroidNetworking
 import com.androidnetworking.common.Priority
 import com.androidnetworking.error.ANError
 import com.androidnetworking.interfaces.StringRequestListener
+import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -28,6 +29,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        updateStatusCheckTime()
 
         AndroidNetworking.initialize(getApplicationContext());
 
@@ -58,18 +60,23 @@ class MainActivity : AppCompatActivity() {
         startRepeatingTask()
     }
 
+    private fun updateStatusCheckTime() {
+        val date = Date()
+        findViewById<TextView>(R.id.update_value).text = date.toString()
+    }
+
     private fun changeStatusToDanger(){
-        val img: ImageView = findViewById<ImageView>(R.id.status_image)
+        val img: ImageView = findViewById(R.id.status_image)
         img.setImageResource(android.R.drawable.ic_delete)
-        val text: TextView = findViewById<TextView>(R.id.main_text)
-        text.text = "You may be infected. Please contact a doctor."
+        val text: TextView = findViewById(R.id.status_text)
+        text.text = getString(R.string.status_danger)
     }
 
     private fun changeStatusToGood(){
-        val img: ImageView = findViewById<ImageView>(R.id.status_image)
+        val img: ImageView = findViewById(R.id.status_image)
         img.setImageResource(android.R.drawable.ic_input_add)
-        val text: TextView = findViewById<TextView>(R.id.main_text)
-        text.text = ""
+        val text: TextView = findViewById(R.id.status_text)
+        text.text = getString(R.string.status_good)
     }
 
 
@@ -92,6 +99,7 @@ class MainActivity : AppCompatActivity() {
                         } else {
                             changeStatusToGood()
                         }
+                        updateStatusCheckTime()
                     }
 
                     override fun onError(error: ANError) {

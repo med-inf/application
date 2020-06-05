@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">MedApp</string>
+    <string name="status_danger">You may be infected. Please contact a doctor.</string>
+    <string name="status_good">We did not detected contact with infected person.</string>
+    <string name="update_text">Last check date: </string>
 </resources>
