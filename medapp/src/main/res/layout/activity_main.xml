@@ -6,24 +6,49 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/date_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+
+        <TextView
+            android:id="@+id/update_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:textSize="15sp"
+            android:text="@string/update_text" />
+
+        <TextView
+            android:id="@+id/update_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/update_label"
+            android:textSize="15sp" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
     <ImageView
         android:id="@+id/status_image"
-        android:layout_width="224dp"
-        android:layout_height="199dp"
-        android:layout_marginStart="92dp"
-        android:layout_marginLeft="92dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/date_layout"
         app:srcCompat="@android:drawable/ic_input_add" />
 
     <TextView
-        android:id="@+id/main_text"
-        android:layout_width="wrap_content"
+        android:id="@+id/status_text"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="56dp"
-        android:layout_marginLeft="56dp"
-        android:layout_marginTop="236dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:textSize="25sp"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@id/status_image"
+        android:ellipsize="none"
+        android:scrollHorizontally="false"
+        android:text="@string/status_good"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
